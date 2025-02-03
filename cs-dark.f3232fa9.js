@@ -50,58 +50,79 @@ function(t, n, o, r, i) {
     }
 }({
     MQ7ai: [function(e, t, n) {
-        let o = document.createElement("style");
-        o.setAttribute("type", "text/css");
-        let r = new MutationObserver(e => {
-            e.forEach(e => {
-                e.addedNodes && e.addedNodes.forEach(e => {
-                    if ("HEAD" === e.nodeName) {
-                        e.appendChild(o);
-                        r.disconnect();
-                    }
-                });
+        // Create a <style> element to inject CSS into the page
+        const styleElement = document.createElement("style");
+        styleElement.setAttribute("type", "text/css");
+
+        // Observe the DOM for changes to ensure the style is injected into the <head>
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeName === "HEAD") {
+                            node.appendChild(styleElement);
+                            observer.disconnect(); // Stop observing once the style is injected
+                        }
+                    });
+                }
             });
         });
-        r.observe(document.documentElement, {
-            childList: !0,
-            subtree: !0
+
+        // Start observing the document for changes
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true,
         });
-        let i = e => {
-            let t = new URL(e);
-            return t.hostname;
+
+        // Extract the hostname from a URL
+        const getHostname = (url) => {
+            const urlObj = new URL(url);
+            return urlObj.hostname;
         };
-        let u = e => {
-            if (o.textContent !== e) {
-                o.textContent = e;
+
+        // Update the injected CSS
+        const updateCSS = (css) => {
+            if (styleElement.textContent !== css) {
+                styleElement.textContent = css;
             }
         };
-        let d = () => {
-            if (o.textContent !== "") {
-                o.textContent = "";
+
+        // Clear the injected CSS
+        const clearCSS = () => {
+            if (styleElement.textContent !== "") {
+                styleElement.textContent = "";
             }
         };
-        let f = async () => {
+
+        // Check if the dark theme should be applied
+        const checkAndApplyCSS = async () => {
             try {
-                let e = await chrome.runtime.sendMessage({
+                const response = await chrome.runtime.sendMessage({
                     action: "shouldApplyCSS",
-                    hostname: i(window.location.href)
+                    hostname: getHostname(window.location.href),
                 });
-                if (e) {
-                    u(e.css);
+
+                if (response) {
+                    updateCSS(response.css);
                 } else {
-                    d();
+                    clearCSS();
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (error) {
+                console.error("Error applying CSS:", error);
             }
         };
-        let c = async () => {
-            let e = () => {
-                f().catch(function() {});
+
+        // Continuously check and apply the dark theme
+        const startThemeChecker = async () => {
+            const checkTheme = () => {
+                checkAndApplyCSS().catch(() => {});
             };
-            setInterval(e, 500);
-            e();
+
+            setInterval(checkTheme, 500); // Check every 500ms
+            checkTheme(); // Initial check
         };
-        c().catch(function() {});
+
+        // Start the theme checker
+        startThemeChecker().catch(() => {});
     }, {}]
 }, ["MQ7ai"], "MQ7ai", "parcelRequirea816"), globalThis.define = t;
