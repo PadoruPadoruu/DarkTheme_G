@@ -1,0 +1,140 @@
+body {
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+html,
+#root {
+    height: 100%;
+}
+
+.app-layout {
+    background-color: #191919;
+    background-size: cover;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    flex-direction: column;
+    min-height: 100vh;
+    display: flex;
+}
+
+.app-header {
+    z-index: 1000;
+    background-color: #333;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    position: sticky;
+    top: 0;
+}
+
+.app-header ul {
+    background-color: #333;
+}
+
+.ant-menu-item-selected {
+    background-color: #0042a2 !important;
+}
+
+.logo-container {
+    align-items: center;
+    padding-right: 16px;
+    display: flex;
+}
+
+.logo {
+    height: 32px;
+    margin-right: 8px;
+}
+
+.logo-text {
+    color: #fff;
+    font-size: 18px;
+}
+
+.app-content {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    overflow: auto;
+    background-color: #1a1a1a;
+}
+
+.app-footer {
+    text-align: center;
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    background-color: #333;
+    color: #ffffff;
+}
+
+.demo-logo {
+    background: #fff3;
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 0;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border: 3px solid #1e1e1e;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #888;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #1e1e1e;
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+a {
+    color: #007bff;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+button {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+input, textarea, select {
+    background-color: #333;
+    color: #ffffff;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+}
