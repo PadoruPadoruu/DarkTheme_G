@@ -23,7 +23,9 @@
       "css": [  ],
       "js": [ "cs-dark.f3232fa9.js" ],
       "matches": [ "\u003Call_urls>" ],
-      "run_at": "document_start"
+      "run_at": "document_start",
+      "all_frames": true,
+      "match_about_blank": true
    } ],
    "default_locale": "en",
    "description": "dark skin for all websites",
@@ -42,7 +44,7 @@
       "open_in_tab": true,
       "page": "options.html"
    },
-   "permissions": [ "storage", "alarms", "scripting", "contextMenus", "webRequest", "declarativeNetRequest" ],
+   "permissions": [ "storage", "alarms", "scripting", "contextMenus" ],
    "update_url": "https://clients2.google.com/service/update2/crx",
    "version": "6.1.2",
    "author": "Your Name or Organization",

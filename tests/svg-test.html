@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  Regression test: SVG fill/stroke color-flip coverage.
+  The extension should flip dark SVG fills and strokes to the theme text color,
+  while SVG text elements should also get the correct text color.
+  Expected result: all SVG shapes with dark fills/strokes should be light-colored.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SVG Test – Dark Theme Coverage</title>
+  <style>
+    body { font-family: sans-serif; background: #fff; color: #000; padding: 16px; }
+    .panel { border: 2px solid #999; margin: 16px 0; padding: 8px; }
+    h2 { margin-top: 0; }
+    svg { border: 1px solid #ccc; margin: 4px; }
+  </style>
+</head>
+<body>
+  <h1>SVG Color-Flip Test</h1>
+  <p>Load this page with the extension enabled. All dark-colored SVG shapes should appear in a light color against the dark background.</p>
+
+  <div class="panel">
+    <h2>Inline SVG – filled paths (dark fills)</h2>
+    <!-- These dark fills should be flipped to the theme text color -->
+    <svg width="120" height="60" viewBox="0 0 120 60">
+      <rect x="5" y="5" width="50" height="50" fill="#000000"/>
+      <circle cx="90" cy="30" r="25" fill="#333333"/>
+    </svg>
+    <svg width="120" height="60" viewBox="0 0 120 60">
+      <path d="M10 50 L60 10 L110 50 Z" fill="#111111"/>
+    </svg>
+    <p>Expected: shapes above switch from dark to a light color.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Inline SVG – stroked paths (dark strokes)</h2>
+    <svg width="200" height="60" viewBox="0 0 200 60">
+      <line x1="10" y1="30" x2="190" y2="30" stroke="#000000" stroke-width="3" fill="none"/>
+      <polyline points="10,10 60,50 110,10 160,50" stroke="#333333" stroke-width="2" fill="none"/>
+    </svg>
+    <p>Expected: strokes above switch from dark to a light color.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Inline SVG – text elements</h2>
+    <svg width="300" height="60" viewBox="0 0 300 60">
+      <text x="10" y="40" font-size="24" fill="#222222">SVG Text Label</text>
+    </svg>
+    <p>Expected: the SVG text above should be readable (light-colored) on the dark background.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Inline SVG – logo-like (should NOT be flipped)</h2>
+    <!-- Logo SVGs with class "logo" should be excluded from color-flipping -->
+    <svg class="logo" width="100" height="60" viewBox="0 0 100 60">
+      <rect x="5" y="5" width="90" height="50" fill="#1a73e8" rx="8"/>
+      <text x="20" y="38" font-size="18" fill="#ffffff">Logo</text>
+    </svg>
+    <p>This branded logo SVG (class="logo") should retain its original colors.</p>
+  </div>
+</body>
+</html>

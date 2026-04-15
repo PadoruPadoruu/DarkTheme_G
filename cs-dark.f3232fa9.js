@@ -54,25 +54,29 @@ function(t, n, o, r, i) {
         const styleElement = document.createElement("style");
         styleElement.setAttribute("type", "text/css");
 
-        // Observe the DOM for changes to ensure the style is injected into the <head>
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.addedNodes) {
-                    mutation.addedNodes.forEach((node) => {
-                        if (node.nodeName === "HEAD") {
-                            node.appendChild(styleElement);
-                            observer.disconnect(); // Stop observing once the style is injected
-                        }
-                    });
+        // Inject into <head> immediately if it already exists, otherwise wait for it
+        const injectStyle = () => {
+            if (document.head) {
+                document.head.appendChild(styleElement);
+                return true;
+            }
+            return false;
+        };
+
+        if (!injectStyle()) {
+            // <head> not yet present — observe the DOM for its arrival
+            const observer = new MutationObserver(() => {
+                if (injectStyle()) {
+                    observer.disconnect(); // Stop observing once the style is injected
                 }
             });
-        });
 
-        // Start observing the document for changes
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-        });
+            // Start observing the document for changes
+            observer.observe(document.documentElement, {
+                childList: true,
+                subtree: true,
+            });
+        }
 
         // Extract the hostname from a URL
         const getHostname = (url) => {
