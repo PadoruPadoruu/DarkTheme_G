@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+  Regression test: dynamic / SPA-style content updates.
+  Verifies that the extension's style injection continues
+  to work when the page's content changes after initial load.
+  Expected result: newly injected content should always appear with the dark theme.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SPA / Dynamic Content Test – Dark Theme Coverage</title>
+  <style>
+    body { font-family: sans-serif; background: #fff; color: #000; padding: 16px; }
+    .panel { border: 2px solid #999; margin: 16px 0; padding: 8px; }
+    button { margin: 4px; padding: 6px 12px; cursor: pointer; }
+    #dynamic-area { min-height: 60px; border: 1px dashed #999; padding: 8px; margin-top: 8px; }
+    h2 { margin-top: 0; }
+  </style>
+</head>
+<body>
+  <h1>SPA / Dynamic Content Test</h1>
+  <p>Use the buttons below to modify the DOM dynamically. All newly added content should appear with the dark theme.</p>
+
+  <div class="panel">
+    <h2>1. Inject new elements at runtime</h2>
+    <button onclick="addParagraph()">Add paragraph</button>
+    <button onclick="addDiv()">Add div with inline light styles</button>
+    <button onclick="clearArea()">Clear</button>
+    <div id="dynamic-area">Dynamically injected content appears here.</div>
+  </div>
+
+  <div class="panel">
+    <h2>2. Simulate SPA route change (replace body content)</h2>
+    <button onclick="simulateRouteChange()">Simulate route change</button>
+    <div id="route-area">Current route: <strong>/home</strong></div>
+  </div>
+
+  <div class="panel">
+    <h2>3. Inject a &lt;style&gt; override into &lt;head&gt; at runtime</h2>
+    <button onclick="injectLightStyle()">Inject light override</button>
+    <button onclick="removeLightStyle()">Remove override</button>
+    <p id="override-status">No override injected yet.</p>
+    <p>Even with a late-injected style, the extension theme should remain dominant.</p>
+  </div>
+
+  <div class="panel">
+    <h2>4. Form elements (input, select, textarea)</h2>
+    <form onsubmit="return false;">
+      <label>Text input: <input type="text" placeholder="placeholder text" value="Some value"></label><br><br>
+      <label>Select:
+        <select>
+          <option>Option 1</option>
+          <option>Option 2</option>
+          <option>Option 3</option>
+        </select>
+      </label><br><br>
+      <label>Textarea:<br>
+        <textarea rows="3" cols="40" placeholder="Placeholder in textarea">Some textarea content</textarea>
+      </label><br><br>
+      <input type="submit" value="Submit button">
+    </form>
+    <p>All form controls above should be styled with the dark theme (dark background, light text).</p>
+  </div>
+
+  <script>
+    var paraCount = 0;
+    var divCount = 0;
+    var lightStyleEl = null;
+
+    function addParagraph() {
+      var area = document.getElementById('dynamic-area');
+      var p = document.createElement('p');
+      p.textContent = 'Dynamically added paragraph #' + (++paraCount) + ' at ' + new Date().toLocaleTimeString();
+      area.appendChild(p);
+    }
+
+    function addDiv() {
+      var area = document.getElementById('dynamic-area');
+      var div = document.createElement('div');
+      div.style.backgroundColor = '#ffffff';
+      div.style.color = '#000000';
+      div.style.padding = '8px';
+      div.style.marginTop = '8px';
+      div.textContent = 'Div #' + (++divCount) + ' with explicit white inline styles — extension should override.';
+      area.appendChild(div);
+    }
+
+    function clearArea() {
+      document.getElementById('dynamic-area').innerHTML = 'Cleared.';
+      paraCount = 0;
+      divCount = 0;
+    }
+
+    function simulateRouteChange() {
+      var area = document.getElementById('route-area');
+      var routes = ['/home', '/about', '/settings', '/profile'];
+      var current = routes[Math.floor(Math.random() * routes.length)];
+      area.innerHTML =
+        '<strong>Route changed to: ' + current + '</strong>' +
+        '<p>New route content loaded at ' + new Date().toLocaleTimeString() + '. Background should still be dark.</p>' +
+        '<ul><li>Item A</li><li>Item B</li><li>Item C</li></ul>';
+    }
+
+    function injectLightStyle() {
+      if (lightStyleEl) { return; }
+      lightStyleEl = document.createElement('style');
+      lightStyleEl.id = 'test-light-override';
+      lightStyleEl.textContent = 'body { background: #ffffff !important; color: #000000 !important; }';
+      document.head.appendChild(lightStyleEl);
+      document.getElementById('override-status').textContent =
+        'Light override injected into <head>. Extension theme should still win (extension style is ordered last).';
+    }
+
+    function removeLightStyle() {
+      if (lightStyleEl) {
+        lightStyleEl.remove();
+        lightStyleEl = null;
+        document.getElementById('override-status').textContent = 'Light override removed.';
+      }
+    }
+  </script>
+</body>
+</html>
